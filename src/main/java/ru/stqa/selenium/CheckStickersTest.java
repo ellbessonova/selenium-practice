@@ -29,15 +29,18 @@ public class CheckStickersTest {
 
         String[] boxTitle = {"box-most-popular", "box-campaigns", "box-latest-products"};
         for (final String box : boxTitle) {
-        int productsItems = driver.findElements(By.xpath(".//div[@class='middle']//div[@id='" + box + "']//li[@class]")).size();
+        int productsItems = driver.findElements(By.xpath(".//div[@class='middle']//div[@id='" + box + "']" +
+                "//li[@class='product column shadow hover-light']")).size();
+
 
         for (int i = 1; i <= productsItems; i++) {
-            WebElement product = driver.findElement(By.xpath(".//div[@class='middle']//div[@id='" + box + "']//li[@class][" + i + "]"));
-            int stickerItems = product.findElements(By.xpath(".//div[@class='image-wrapper']/div[@title]")).size();
+            WebElement product = driver.findElement(By.xpath(".//div[@class='middle']//div[@id='" + box + "']" +
+                    "//li[@class='product column shadow hover-light'][" + i + "]"));
+            int stickerItems = product.findElements(By.xpath(".//div[@class='image-wrapper']/div[contains(@title,'sticker')]")).size();
             if (stickerItems != 1) {
                 System.out.println("У товара больше одного стикера или стикер отсутствует");
             } else {
-                String stickerName = product.findElement(By.xpath(".//div[@title]")).getText();
+                String stickerName = product.findElement(By.xpath(".//div[contains(@title,'sticker')]")).getText();
                 System.out.println("У товара есть стикер " + stickerName);
             }
         }
