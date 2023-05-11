@@ -4,9 +4,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.LocalDate;
@@ -20,13 +22,14 @@ public class UserRegistrationTest {
 
     @Before
     public void start(){
-        driver = new ChromeDriver();
+//        driver = new ChromeDriver();
+        driver = new FirefoxDriver();
         driver.manage().timeouts().implicitlyWait(ofSeconds(10));
         wait = new WebDriverWait(driver, ofSeconds(10));
     }
 
     @Test
-    public void test() {
+    public void test() throws InterruptedException {
         driver.get("http://localhost/litecart");
 
         String email = "test" + LocalDate.now() + "@list.ru";
@@ -39,11 +42,11 @@ public class UserRegistrationTest {
         driver.findElement(By.name("postcode")).sendKeys("12345");
         driver.findElement(By.name("city")).sendKeys("New York");
 
-        Select country = new Select(driver.findElement(By.name("country_code")));
-        country.selectByVisibleText("United States");
-
-        Select state = new Select(driver.findElement(By.cssSelector("select[name='zone_code']")));
-        state.selectByVisibleText("New York");
+        driver.findElement(By.cssSelector("[id ^= select2-country_code]")).click();
+        driver.findElement(By.cssSelector(".select2-results__option[id $= US]")).click();
+        wait.until((WebDriver d) -> d.findElement(By.cssSelector("select[name=zone_code] option[value=NY]")));
+        WebElement element = driver.findElement(By.xpath(".//select[@name = 'zone_code']"));
+        ((JavascriptExecutor)driver).executeScript("arguments[0].selectedIndex = 3 ; arguments[0].dispatchEvent(new Event('change'))", element);
 
         driver.findElement(By.name("email")).sendKeys(email);
         driver.findElement(By.name("phone")).sendKeys("777888");
